@@ -1,0 +1,145 @@
+Project Overview
+The User Access Management System is a basic web application developed using Java Servlets, JSP, and PostgreSQL. It allows users within an organization to manage access requests for various software applications. Employees can register, log in, and request access to software. Managers can review and approve/reject access requests, while Admins can create new software applications.
+
+Features
+User Registration: New users can sign up and create an account with an "Employee" role by default.
+User Authentication: All users can log in to the system using their credentials.
+Software Management: Admins can add new software applications.
+Access Request Submission: Employees can request access to specific software applications.
+Access Approval: Managers can approve or reject access requests.
+Technologies Used
+Backend: Java Servlets
+Frontend: JavaServer Pages (JSP), HTML, CSS, JavaScript
+Database: PostgreSQL
+Project Management: Maven
+Server: Apache Tomcat
+Prerequisites
+Java Development Kit (JDK) - version 8 or higher.
+Apache Tomcat - version 9 or higher.
+PostgreSQL - version 9.6 or higher.
+Maven - for managing dependencies and building the project.
+Installation and Setup
+1. Database Setup
+Install PostgreSQL and ensure it's running.
+
+Create a database named user_access_management:
+
+sql
+Copy code
+CREATE DATABASE user_access_management;
+Create tables using the following SQL script:
+
+sql
+Copy code
+-- Users table
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    role TEXT CHECK (role IN ('Employee', 'Manager', 'Admin'))
+);
+
+-- Software table
+CREATE TABLE software (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    description TEXT,
+    access_levels TEXT
+);
+
+-- Requests table
+CREATE TABLE requests (
+    id SERIAL PRIMARY KEY,
+    user_id INT REFERENCES users(id),
+    software_id INT REFERENCES software(id),
+    access_type TEXT CHECK (access_type IN ('Read', 'Write', 'Admin')),
+    reason TEXT,
+    status TEXT CHECK (status IN ('Pending', 'Approved', 'Rejected')) DEFAULT 'Pending'
+);
+Configure Database Credentials:
+
+Update the db.properties file with your PostgreSQL credentials:
+bash
+Copy code
+db.url=jdbc:postgresql://localhost:5432/user_access_management
+db.user=your_database_username
+db.password=your_database_password
+2. Project Setup
+Clone the Repository:
+
+bash
+Copy code
+git clone https://github.com/yourusername/user-access-management.git
+cd user-access-management
+Build the Project with Maven:
+
+bash
+Copy code
+mvn clean install
+Deploy the WAR file:
+
+After building, the WAR file will be located in the target folder. Deploy this file to your Apache Tomcat server by copying it to the webapps directory.
+Start the Server:
+
+Start Apache Tomcat, and access the application at http://localhost:8080/user-access-management.
+Usage Instructions
+1. Access the System
+Open a web browser and go to http://localhost:8080/user-access-management.
+
+2. Pages and User Roles
+Sign Up (signup.jsp): Allows new users to register with a default "Employee" role.
+Login (login.jsp): All users can log in to access their dashboard.
+Employee: Can request access to software applications.
+Manager: Can view and approve/reject access requests.
+Admin: Can add new software applications.
+3. Functional Pages
+Sign-Up Page (signup.jsp): Allows users to create an account.
+Login Page (login.jsp): Allows registered users to log in.
+Create Software (createSoftware.jsp): Admins can add new software applications.
+Request Access (requestAccess.jsp): Employees can request access to software.
+Pending Requests (pendingRequests.jsp): Managers can approve/reject pending requests.
+4. Data Flow and Permissions
+Sign-Up: New users register with default "Employee" role.
+Login: Directs users based on role:
+Employee: Access requestAccess.jsp.
+Manager: Access pendingRequests.jsp.
+Admin: Access createSoftware.jsp.
+5. Session Management
+Each page verifies user roles via session attributes and redirects unauthorized users to login.jsp.
+
+File Structure
+Java Servlets: Handles backend logic.
+SignUpServlet.java: Handles user registration.
+LoginServlet.java: Manages login and user sessions.
+SoftwareServlet.java: Allows Admins to add software applications.
+RequestServlet.java: Allows Employees to submit access requests.
+ApprovalServlet.java: Allows Managers to approve/reject requests.
+JSP Pages: Frontend views for each page.
+signup.jsp
+login.jsp
+createSoftware.jsp
+requestAccess.jsp
+pendingRequests.jsp
+Known Issues and Limitations
+Limited session timeout and role-based access restrictions.
+Currently no email notifications for approvals or rejections.
+Future Enhancements
+Add email notifications for managers and employees on request status changes.
+Improve user interface with CSS frameworks.
+Add more comprehensive logging and auditing.
+Troubleshooting
+Database Connection Issues: Verify db.properties configuration matches your PostgreSQL setup.
+Servlet Errors: Ensure all servlets are mapped correctly in the web.xml file.
+License
+This project is open source and available under the MIT License.
+
+This README provides a guide to set up, deploy, and use the User Access Management System. Adjust URLs and database connection settings as per your environment.
+
+
+
+
+
+
+
+
+
